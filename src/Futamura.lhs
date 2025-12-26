@@ -149,7 +149,22 @@ Let's try `interpreter'`
 
 > -- >>> :t run gen interpreter'
 
-We get generator of compilers.
+What does it look like?
+-----------------------
+
+> -- >>> :t compiler
+
+> compiler4 :: P (Compiler a r)
+> compiler4 = run gen interpreter'
+
+> -- >>> :t run compiler prog'
+
+> -- >>> :t run compiler4 prog'
+
+So what is `gen`?
+-----------------
+
+Generator of compilers
 
 > genCompiler :: P (S (Interpreter a r) -> P (Compiler a r))
 > genCompiler = gen
@@ -168,8 +183,20 @@ Helpers
 > type Mix a b r = S (a -> b -> r) ->    a -> P (b -> r)
 > type Gen a b r = S (a -> b -> r) -> P (a -> P (b -> r))
 
+> -- >>> :t mix :: P (Mix a b r)
+
+> -- >>> :t gen :: P (Gen a b r)
+
+What do we get?
+---------------
+
+> genMix :: P (Gen a b r)
+> genMix = run gen mix'
+
+So what is `gen`?
+-----------------
+
 Generator of generators
------------------------
 
 > genGen :: P (S (Mix a b r) -> P (Gen a b r))
 > genGen = gen
@@ -189,6 +216,11 @@ Can we go further?
 > gen3 :: P (Gen a b r)
 > gen3 = run genGen2 mix'
 
+...
+---
+
+All `genX` are the same as `gen` from Projection #3
+
 What about evaluation?
 ----------------------
 
@@ -197,8 +229,3 @@ What about evaluation?
 > --      = run (run genGen mix') mix'
 > --      = run (run gen mix')  mix'
 > --      = run (run (run mix mix' mix') mix')  mix'
-
-...
----
-
-All `genX` are the same as `gen` from Projection #3
