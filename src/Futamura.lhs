@@ -176,4 +176,4 @@ What about evaluation?
 ...
 ---
 
-All `genX` are the same as `generator` from Projection #3
+All `genX` are the same as `gen` from Projection #3
