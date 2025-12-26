@@ -75,20 +75,36 @@ Projection #1
  
 > -- >>> :t run mix interpreter'
 
-What does it look like?
------------------------
-
-> -- >>> :t run compiler
-
-> compiler2 :: P (S (a -> r) -> P (a -> r))
-> compiler2 = P (run mix interpreter')
-
-> -- >>> :t run compiler prog'
+> -- >>> :t run mix interpreter' prog'
 
 Projection #2
 =============
 
+> -- >>> :t run mix mix'
+ 
+What can we pass as argument to `run mix mix'`?
+----------
+
+> -- >>> :t interpreter'
+
+> -- >>> :t mix'
+
+Let's try `interpreter'`
+----------------------
+
 > -- >>> :t run mix mix' interpreter'
+
+What does it look like?
+-----------------------
+
+> -- >>> :t compiler
+
+> compiler2 :: P (S (a -> r) -> P (a -> r))
+> compiler2 = run mix mix' interpreter'
+
+> -- >>> :t run compiler prog'
+
+> -- >>> :t run compiler2 prog'
 
 Helpers
 -------
@@ -104,30 +120,42 @@ Helpers
 >
 > -- >>> :t compiler' :: S (Compiler a r)
 
-Generator of compilers
-----------------------
+> interpreter2 :: P (Interpreter a r)
+> interpreter2 = interpreter
 
-> genCompiler :: P (S (Interpreter a r) -> P (Compiler a r))
-> genCompiler = P (run mix mix')
+> compiler3 :: P (Compiler a r)
+> compiler3 = compiler2
 
 Projection #3
 =============
 
 > -- >>> :t run mix mix' mix'
 
-What is `run mix mix'`?
+What is `run mix mix' mix'`?
 -----------------------
 
 > gen :: P (S (a -> b -> r) -> P (a -> P (b -> r)))
-> gen = P (run mix mix')
+> gen = run mix mix' mix'
+ 
+What can we pass as argument to `gen`?
+----------
+
+> -- >>> :t interpreter'
+
+> -- >>> :t mix'
 
 Let's try `interpreter'`
 ------------------------
 
 > -- >>> :t run gen interpreter'
 
-> genCompiler2 :: P (S (Interpreter a r) -> P (Compiler a r))
-> genCompiler2 = run gen mix'
+We get generator of compilers.
+
+> genCompiler :: P (S (Interpreter a r) -> P (Compiler a r))
+> genCompiler = run gen mix'
+
+Projection #4 and beyond
+=============
 
 Let's try `mix'`
 ----------------
@@ -145,9 +173,6 @@ Generator of generators
 
 > genGen :: P (S (Mix a b r) -> P (Gen a b r))
 > genGen = run gen mix'
-
-Projection #X
-=============
 
 Can we go further?
 ------------------
@@ -171,7 +196,7 @@ What about evaluation?
 > --      = run (run gen2 mix') mix'
 > --      = run (run (run genGen mix') mix') mix'
 > --      = run (run (run (run gen mix') mix') mix') mix'
-> --      = run (run (run (run (run mix mix') mix') mix') mix') mix'
+> --      = run (run (run (run (run mix mix' mix') mix') mix') mix') mix'
 
 ...
 ---
