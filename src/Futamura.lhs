@@ -152,7 +152,7 @@ Let's try `interpreter'`
 We get generator of compilers.
 
 > genCompiler :: P (S (Interpreter a r) -> P (Compiler a r))
-> genCompiler = run gen mix'
+> genCompiler = gen
 
 Projection #4 and beyond
 =============
@@ -172,7 +172,7 @@ Generator of generators
 -----------------------
 
 > genGen :: P (S (Mix a b r) -> P (Gen a b r))
-> genGen = run gen mix'
+> genGen = gen
 
 Can we go further?
 ------------------
@@ -181,7 +181,7 @@ Can we go further?
 > gen2 = run genGen mix'
 
 > genGen2 :: P (S (Mix a b r) -> P (Gen a b r))
-> genGen2 = run gen2 mix'
+> genGen2 = gen2
 
 Can we go further?
 ------------------
@@ -193,10 +193,10 @@ What about evaluation?
 ----------------------
 
 > -- gen3 = run genGen2 mix'
-> --      = run (run gen2 mix') mix'
-> --      = run (run (run genGen mix') mix') mix'
-> --      = run (run (run (run gen mix') mix') mix') mix'
-> --      = run (run (run (run (run mix mix' mix') mix') mix') mix') mix'
+> --      = run gen2 mix'
+> --      = run (run genGen mix') mix'
+> --      = run (run gen mix')  mix'
+> --      = run (run (run mix mix' mix') mix')  mix'
 
 ...
 ---
